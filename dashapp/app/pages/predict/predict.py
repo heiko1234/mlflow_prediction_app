@@ -1,6 +1,4 @@
 
-
-
 # landing page
 
 import base64
@@ -16,8 +14,7 @@ from dash import ctx
 from dash import html, dcc
 from dash.dependencies import Input, Output, State
 from dash import dash_table
-import dash_daq as daq
-
+from upath import UPath
 
 from app.utilities.cards import (
     standard_card,
@@ -55,12 +52,6 @@ layout = html.Div(
                             id="model_selection_dd",
                             style={"width": "280px"}
                         ),
-                        html.Div(id="spacer_id"),
-                        html.Button('Submit',
-                            className="submit_button",
-                            id='submitbutton',
-                            n_clicks=0,
-                        )
                     ]
                     )
                 ],
@@ -74,17 +65,45 @@ layout = html.Div(
 
 
 @dash.callback(
-
-    Output("spacer_id", "children"),
     [
-        Input("submitbutton", "n_clicks"),
+        Output("model_selection_dd", "options"),
+        Output("model_selection_dd", "value"),
+    ],
+    [
+        Input("model_selection_dd", "value"),
     ]
 )
-def update_data_scaler(data_scaler):
+def update_data_scaler(dd_value):
 
-    output = html.H3("Data Scaler")
 
-    return output
+    api_output = ["project1", "project2"]
+
+    output = []
+    for i in api_output:
+        output.append(
+            {"label": i, "value": i}
+        )
+
+    if dd_value is None:
+        dd_value = output[0]["value"]
+
+    return output, dd_value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

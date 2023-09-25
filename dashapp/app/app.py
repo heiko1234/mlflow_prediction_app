@@ -13,9 +13,9 @@ from flask import Flask
 
 # longcallbacks
 # diskcache
-# import diskcache
-# cache = diskcache.Cache("./cache")
-# long_callback_manager = DiskcacheLongCallbackManager(cache)
+import diskcache
+cache = diskcache.Cache("./cache")
+long_callback_manager = DiskcacheLongCallbackManager(cache)
 
 
 
@@ -58,7 +58,7 @@ sidebar = html.Div(
             dcc.Markdown("\n---\n")
         ),
         icon_and_text(id="side_home", text="Home", icon="home", href=url_base_pathname+dash.page_registry['pages.home']['path']),
-        icon_and_text(id="side_home", text="Predict", icon="ai1", href=url_base_pathname+dash.page_registry['pages.predict.predict']['path']),
+        icon_and_text(id="side_predict", text="Predict", icon="ai1", href=url_base_pathname+dash.page_registry['pages.predict.predict']['path']),
     ],
     className="sidebar"
 )
@@ -67,7 +67,6 @@ app.layout = html.Div(
     [
         sidebar,
         a_session_store,
-        feature_limit_store,
         html.Div(
             [
                 dash.page_container
