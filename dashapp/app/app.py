@@ -25,6 +25,9 @@ server = Flask(__name__)
 a_session_store = dcc.Store(
     id = "a_session_store", storage_type="session"
 )
+feature_limit_store = dcc.Store(
+    id = "feature_limit_store", storage_type="session"
+)
 
 
 # localhost/dashapp/pages_id
@@ -55,6 +58,7 @@ sidebar = html.Div(
             dcc.Markdown("\n---\n")
         ),
         icon_and_text(id="side_home", text="Home", icon="home", href=url_base_pathname+dash.page_registry['pages.home']['path']),
+        icon_and_text(id="side_home", text="Predict", icon="ai1", href=url_base_pathname+dash.page_registry['pages.predict.predict']['path']),
     ],
     className="sidebar"
 )
@@ -63,6 +67,7 @@ app.layout = html.Div(
     [
         sidebar,
         a_session_store,
+        feature_limit_store,
         html.Div(
             [
                 dash.page_container

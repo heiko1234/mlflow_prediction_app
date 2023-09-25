@@ -26,19 +26,19 @@ layout = html.Div(
             className="home_page_subcontent",
             children=[
                 home_card(
-                    id="landingcard",
-                    header_text="Landing page",
-                    text="this is the landing page",
-                    icon="get_started",
-                    href="landing"
+                    id="Predictcard",
+                    header_text="Predict",
+                    text="Use your model to predict something",
+                    icon="ai1",
+                    href="predict"
                 ),
-                home_card(
-                    id="datacard",
-                    header_text="Data",
-                    text="this is the data page",
-                    icon="data",
-                    href="dataload"
-                ),
+                # home_card(
+                #     id="datacard",
+                #     header_text="Data",
+                #     text="this is the data page",
+                #     icon="data",
+                #     href="dataload"
+                # ),
             ],
         ),
     ],
