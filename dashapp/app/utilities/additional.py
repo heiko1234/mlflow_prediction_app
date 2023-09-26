@@ -11,11 +11,14 @@ from pathlib import Path, PurePosixPath
 from azure.storage.blob import BlobServiceClient
 
 
-from dash import dcc as dcc
+from dash import dcc, html
+import dash_daq as daq
 
 
 from numpy.random import randint
 from numpy.random import rand
+
+import pandas as pd
 
 
 
@@ -98,5 +101,28 @@ def gauge_color(value, min = 20, max= 60, ranges=[0,30,40,50,60], color=None, la
         )
     )
 
+
+
+def create_feature_div_df(dict):
+
+    # df = pd.DataFrame(columns=["feature", "value", "min", "max"])
+
+    df = pd.DataFrame()
+
+
+    for i in dict["props"]["children"]:
+        for j in i["props"]["children"]:
+            try:
+                if j["props"]["id"]["type"] == "numberinput":
+
+                    df_newrow = {"feature": j["props"]["id"]["index"], "value": j["props"]["value"], "min": j["props"]["min"], "max": j["props"]["max"]}
+                    df_new = pd.DataFrame(df_newrow, index=[0])
+
+                    df = pd.concat([df, df_new], axis=0)
+                    df = df.reset_index(drop=True)
+
+            except:
+                pass
+    return df
 
 
