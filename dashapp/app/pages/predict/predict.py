@@ -267,13 +267,51 @@ def make_model_feature_output(numberinput_value, numberinput_inputs):
     # print(df)
     # print(df_output)
 
-    data_dict = df.to_dict(orient="records")
+    df_for_modelling = df.T.rename(columns=df.T.iloc[0]).iloc[1:2].reset_index(drop=True)
+    # print(df_for_modelling)
+
+    data_dict = df_for_modelling.to_dict(orient="records")
+
+    # print(data_dict)
 
 
-    predicted_value = 80
-    target_min = 30
-    target_max = 90
-    target_name = "Parameter"
+
+    headers = None
+    endpoint = "model_prediction_send_data"
+
+    blobstorage_environment = "devstoreaccount1"
+
+    data_statistics_dict = {
+        "account": blobstorage_environment,
+        "use_model_name": "project_name",
+        "data_dict": data_dict[0]
+    }
+
+    response = dataclient.Backendclient.execute_post(
+        headers=headers,
+        endpoint=endpoint,
+        json=data_statistics_dict
+        )
+
+    response.status_code     # 200
+
+    if response.status_code == 200:
+        output = response.json()
+
+    print(output)
+
+
+    output_df = pd.read_json(output, orient='split')
+    output_df.iloc[0,0]
+
+    predicted_value = output_df.iloc[0,0]
+    
+    print(predicted_value)
+
+    # predicted_value = 50
+    target_min = 0
+    target_max = 100
+    target_name = "Yield"
 
 
     output = gauge_color(value=predicted_value, min = target_min, max= target_max, ranges=[30,40,50,60, 90], color="blue", label = target_name)
