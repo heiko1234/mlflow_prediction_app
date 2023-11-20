@@ -4,6 +4,7 @@
 import base64
 import datetime
 import io
+from io import StringIO
 
 import pandas as pd
 
@@ -223,15 +224,18 @@ def update_list_container_div(model_selection_dd_value):
             for feature_element in list(api_output_dict[model_selection_dd_value].keys()):
 
                 avg_value = 0.5*(api_output_dict[model_selection_dd_value][feature_element]["max"] - api_output_dict[model_selection_dd_value][feature_element]["min"]) + api_output_dict[model_selection_dd_value][feature_element]["min"]
+                range_value = api_output_dict[model_selection_dd_value][feature_element]["max"] - api_output_dict[model_selection_dd_value][feature_element]["min"]
+                step_value = round(range_value/100, 4)
                 element_output = html.Div([
                     html.H3(children=feature_element),
                     html.H4(children=f"Min: {round(api_output_dict[model_selection_dd_value][feature_element]['min'], 4)} - Max: {round(api_output_dict[model_selection_dd_value][feature_element]['max'], 4)}"),
                     dcc.Input(
                         id={"type": "numberinput", "index": feature_element},  #
                         type="number",
-                        value=avg_value,
+                        value=round(avg_value,4),
                         min=api_output_dict[model_selection_dd_value][feature_element]["min"],
                         max=api_output_dict[model_selection_dd_value][feature_element]["max"],
+                        step=step_value
                     )
                 ])
 
@@ -258,6 +262,9 @@ def make_model_feature_output(numberinput_value, numberinput_inputs):
     output = numberinput_value
 
     df = create_feature_div_df(output)
+
+    print(f"make_model_feature_output: {df}")
+    print(f"make_model_feature_output numberinput_inputs: {numberinput_inputs}")
 
     # df_output should be df pivot table with feature as columns and value as rows
     df_output = df.pivot_table(index=["feature"])
@@ -298,15 +305,16 @@ def make_model_feature_output(numberinput_value, numberinput_inputs):
     if response.status_code == 200:
         output = response.json()
 
-    print(output)
+    print(f"make_model_feature_output: {output}")
 
 
     output_df = pd.read_json(output, orient='split')
     output_df.iloc[0,0]
 
     predicted_value = output_df.iloc[0,0]
-    
-    print(predicted_value)
+
+    print(f"make_model_feature_output prediction: {predicted_value}")
+
 
     # predicted_value = 50
     target_min = 0
