@@ -126,3 +126,26 @@ def create_feature_div_df(dict):
     return df
 
 
+
+def create_feature_div_dict(dict):
+
+    # {'Feature1': {'min': value1, 'max': value2}, }
+
+    output = {}
+
+
+    for i in dict["props"]["children"]:
+        for j in i["props"]["children"]:
+            try:
+                if j["props"]["id"]["type"] == "limitsinput":
+
+                    output[j["props"]["id"]["index"]] = {"min": j["props"]["value"][0], "max": j["props"]["value"][1]}
+
+            except:
+                pass
+    return output
+
+
+
+
+

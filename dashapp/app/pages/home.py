@@ -32,6 +32,13 @@ layout = html.Div(
                     icon="ai1",
                     href="predict"
                 ),
+                home_card(
+                    id="Optimizercard",
+                    header_text="Optimize",
+                    text="Use your model to optimize your target",
+                    icon="ai1",
+                    href="optimizer"
+                ),
                 # home_card(
                 #     id="datacard",
                 #     header_text="Data",

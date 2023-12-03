@@ -1,5 +1,5 @@
 
-# landing page
+# predicting page
 
 import base64
 import datetime
@@ -194,6 +194,7 @@ def update_list_container_div(model_selection_dd_value):
                 "account": "devstoreaccount1",
                 "use_model_name": model_selection_dd_value,
                 "artifact": artifact_value,
+                "staging": "Staging"
             }
 
 
@@ -235,7 +236,7 @@ def update_list_container_div(model_selection_dd_value):
                         value=round(avg_value,4),
                         min=api_output_dict[model_selection_dd_value][feature_element]["min"],
                         max=api_output_dict[model_selection_dd_value][feature_element]["max"],
-                        step=step_value
+                        # step=step_value,
                     )
                 ])
 
@@ -256,8 +257,9 @@ def update_list_container_div(model_selection_dd_value):
     Input("list-container-div", "children"),
     # add pattern matching base on the numberinput id
     Input({"type": "numberinput", "index": ALL}, "value"),
+    Input("model_selection_dd", "value"),
 )
-def make_model_feature_output(numberinput_value, numberinput_inputs):
+def make_model_feature_output(numberinput_value, numberinput_inputs, model_selection_dd_value):
 
     output = numberinput_value
 
@@ -291,7 +293,8 @@ def make_model_feature_output(numberinput_value, numberinput_inputs):
     data_statistics_dict = {
         "account": blobstorage_environment,
         "use_model_name": "project_name",
-        "data_dict": data_dict[0]
+        "data_dict": data_dict[0],
+        "staging": "Staging"
     }
 
     response = dataclient.Backendclient.execute_post(
@@ -308,7 +311,7 @@ def make_model_feature_output(numberinput_value, numberinput_inputs):
     print(f"make_model_feature_output: {output}")
 
 
-    output_df = pd.read_json(output, orient='split')
+    output_df = pd.read_json(StringIO(output), orient='split')
     output_df.iloc[0,0]
 
     predicted_value = output_df.iloc[0,0]
@@ -316,10 +319,40 @@ def make_model_feature_output(numberinput_value, numberinput_inputs):
     print(f"make_model_feature_output prediction: {predicted_value}")
 
 
+    headers = None
+    endpoint = "get_model_artifact"
+    blobstorage_environment = "devstoreaccount1"
+
+    data_statistics_dict = {
+        "account": blobstorage_environment,
+        "use_model_name": model_selection_dd_value,
+        "artifact": "target_limits.json",
+        "staging": "Staging"
+    }
+
+    response = dataclient.Backendclient.execute_post(
+        headers=headers,
+        endpoint=endpoint,
+        json=data_statistics_dict
+    )
+
+    response.status_code     # 200
+
+    if response.status_code == 200:
+        output = response.json()
+
+
+    target_key = list(output.keys())[0]
+    print(target_key)
+
+
+    print(output[target_key]["min"])
+    print(output[target_key]["max"])
+
     # predicted_value = 50
-    target_min = 0
-    target_max = 100
-    target_name = "Yield"
+    target_min = round(output[target_key]["min"], 0)   #0
+    target_max = round(output[target_key]["max"], 0)  # 100
+    target_name = target_key  # "Yield"
 
 
     output = gauge_color(value=predicted_value, min = target_min, max= target_max, ranges=[30,40,50,60, 90], color="blue", label = target_name)

@@ -59,6 +59,7 @@ sidebar = html.Div(
         ),
         icon_and_text(id="side_home", text="Home", icon="home", href=url_base_pathname+dash.page_registry['pages.home']['path']),
         icon_and_text(id="side_predict", text="Predict", icon="ai1", href=url_base_pathname+dash.page_registry['pages.predict.predict']['path']),
+        icon_and_text(id="side_optimizer", text="Optimize", icon="ai1", href=url_base_pathname+dash.page_registry['pages.optimizer.optimizer']['path']),
     ],
     className="sidebar"
 )
